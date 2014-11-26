@@ -11,32 +11,57 @@ import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import scala.io.Source
 
 object Application extends Controller {
+  val pageSize = 50
 
   def index = Action {
-    Ok(views.html.index)
+    Ok(views.html.index())
   }
 
   def foods(fr: FoodRequest) = Action {
-    val matchingFoods = Foods.all().filter { food =>
-      fr.nutrientFilters.forall { nutrientFilter =>
+    val matchingFoods = Foods.all.filter { food =>
+      fr.nutrientFilters.forall { filter =>
         food.nutrients.exists { nutrient =>
-          nutrient.description == nutrientFilter.name &&
-          nutrient.value < nutrientFilter.minimumValue
+          nutrient.description == filter.name &&
+          nutrient.value < filter.maximumValue
         }
       }
     }
-    Ok(Json.generate(matchingFoods)) as "application/json"
+    val response = FoodsResponse(matchingFoods.drop(fr.page - 1 * pageSize).take(pageSize), matchingFoods.length)
+    Ok(Json.generate(response)) as "application/json"
+  }
+
+  def find(id: String) = Action {
+    Foods.all.find(_.id == id) map { food =>
+      val json = Json.generate(food)
+      Ok(json) as "application/json"
+    } getOrElse NotFound("")
+  }
+
+  def search(term: String) = Action {
+    val matches = Foods.all.filter { food =>
+      food.description.contains(term) || food.tags.contains(term)
+    }
+    val json = Json.generate(matches)
+    Ok(json) as "application/json"
+  }
+
+  def nutrients() = Action {
+    val nutrients = Foods.all.map(_.nutrients.map(_.description)).flatten.distinct.sorted
+    Ok(Json.generate(nutrients)) as "application/json"
   }
 
 }
 
-case class FoodRequest(nutrientFilters: Seq[NutrientFilter])
-case class NutrientFilter(name: String, minimumValue: BigDecimal)
+
+case class NutrientFilter(name: String, maximumValue: BigDecimal)
+
+case class FoodsResponse(foods: Seq[Food], total: Int)
 
 object Foods {
+  import play.api.Play.current
 
   def all(): Seq[Food] = {
-    val txt = Source.fromFile(new File("foods.json")).getLines.mkString
+    val txt = Source.fromFile(new File(Play.application.classloader.getResource("foods.json").getFile)).getLines().mkString
     Json.parse[Seq[Food]](txt)
   }
 }
@@ -57,4 +82,32 @@ object Json {
   def parse[A](json: String)(implicit m : Manifest[A]): A = mapper.readValue[A](json)
 
   def generate(x: Any): String = mapper writeValueAsString x
+}
+
+case class FoodRequest(nutrientFilters: Seq[NutrientFilter], page: Int)
+
+object FoodRequest {
+  class FoodRequestBinder extends QueryStringBindable[FoodRequest] {
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, FoodRequest]] = {
+      val filters = params
+        .get("filters")
+        .get
+        .head
+        .split("___")
+        .filter(_.contains(":"))
+        .map { rawValue =>
+        val parts = rawValue.split(":")
+        val name = parts(0)
+        val amount = BigDecimal(parts(1))
+        NutrientFilter(name, amount)
+      }
+      val page = params.get("page").getOrElse(Seq("1")).head.toInt
+      val request = FoodRequest(filters, page)
+      Some(Right(request))
+    }
+
+    override def unbind(key: String, value: FoodRequest): String = ""
+  }
+
+  implicit val binder: FoodRequestBinder = new FoodRequestBinder
 }

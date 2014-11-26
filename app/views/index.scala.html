@@ -1,7 +1,54 @@
 <!Doctype html>
 <html>
     <head>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
+        <script type="text/javascript">
+            function foodsViewModel(nutrients) {
+                _this = this;
+                _this.nutrients = ko.observableArray(nutrients);
+                _this.nutrientFilters = ko.observableArray();
+                _this.nutrientToAdd = ko.observable();
+                _this.nutrientValueToAdd = ko.observable();
+                _this.matchingFoods = ko.observableArray();
+                _this.totalMatchingFoods = ko.observable();
 
+                _this.addNutrient = function() {
+                    var x = {
+                        nutrient: _this.nutrientToAdd(),
+                        amount: _this.nutrientValueToAdd()
+                    };
+                    _this.nutrientFilters.push(x);
+                    _this.nutrientToAdd();
+                    _this.nutrientValueToAdd();
+                    _this.refreshMatchingFoods();
+                };
+
+                _this.refreshMatchingFoods = function() {
+                    $.get("/foods?filters=" + _this.buildFilters(), function(data) {
+                        _this.matchingFoods(data.foods);
+                        _this.totalMatchingFoods(data.total);
+                    });
+                };
+
+                _this.buildFilters = function() {
+                    var filters = "";
+                    for (var i = 0; i < _this.nutrientFilters().length; i++) {
+                        var filter = _this.nutrientFilters()[i];
+                        filters += filter.nutrient + ":" + filter.amount + "___";
+                    }
+                    return filters;
+                };
+            }
+
+            var model = null;
+
+            $.get("/nutrients", function(data) {
+                model = new foodsViewModel(data);
+                ko.applyBindings(model);
+            });
+
+        </script>
     </head>
     <body>
       <h1>Food Nutrient Database</h1>
@@ -11,32 +58,37 @@
               <thead>
                 <tr>
                     <th>Nutrient</th>
-                    <th>Amount</th>
+                    <th>Maximum Amount</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody data-bind="foreach: nutrientFilters">
                 <tr>
-                    <td>
-                        <select>
-                            <option>Vitamin A</option>
-                            <option>Vitamin B</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" />
-                    </td>
+                    <td data-bind="text: nutrient"></td>
+                    <td data-bind="text: amount"></td>
                 </tr>
               </tbody>
           </table>
+          <div>
+              <label>
+                  <select data-bind="options: nutrients, value: nutrientToAdd"></select>
+              </label>
+              <label>
+                  <input type="text" data-bind="value: nutrientValueToAdd" />
+              </label>
+              <button data-bind="click: addNutrient">Add</button>
+          </div>
       </div>
       <div>
           <h2>Matching Foods</h2>
-          <ul>
-              <li><a href="#">Food 1</a></li>
-              <li><a href="#">Food 2</a></li>
-              <li><a href="#">Food 3</a></li>
-              <li><a href="#">Food 4</a></li>
-          </ul>
+          <h3>Total matching foods: <span data-bind="text: totalMatchingFoods"></span></h3>
+          <table>
+              <tbody data-bind="foreach: matchingFoods">
+                   <tr>
+                       <td data-bind="text: description"></td>
+                       <td data-bind="text: tags"></td>
+                   </tr>
+              </tbody>
+          </table>
       </div>
       <div>
           <h2>{FOOD}</h2>
