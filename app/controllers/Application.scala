@@ -50,7 +50,7 @@ object Application extends Controller {
 
   def nutrients() = Action {
     val nutrients = Foods.all.map(_.nutrients.map(_.description)).flatten.distinct.sorted
-    Ok(Json.generate(nutrients)) as "application/json"
+    Ok(Json.generate(nutrients)) as "application/json" withHeaders(("Cache-Control", "max-age=864000"))
   }
 
 }
