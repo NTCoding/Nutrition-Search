@@ -11,7 +11,7 @@ import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import scala.io.Source
 
 object Application extends Controller {
-  val pageSize = 50
+  val pageSize = 25
 
   def index = Action {
     Ok(views.html.index())
@@ -25,7 +25,7 @@ object Application extends Controller {
           nutrient.value < filter.maximumValue
         }
       }
-    }
+    } sortBy(_.description)
     val response = FoodsResponse(matchingFoods.drop(fr.page - 1 * pageSize).take(pageSize), matchingFoods.length)
     Ok(Json.generate(response)) as "application/json"
   }

@@ -22,6 +22,7 @@
                 _this.nutrientValueToAdd = ko.observable();
                 _this.matchingFoods = ko.observableArray();
                 _this.totalMatchingFoods = ko.observable();
+                _this.selectedFood = ko.observable({ description: "Select a Food to See Nutrient Content", vitamins: [], minerals: [], otherNutrients:[]});
 
                 _this.addNutrient = function() {
                     var x = {
@@ -48,6 +49,28 @@
                         filters += filter.nutrient + ":" + filter.amount + "___";
                     }
                     return filters;
+                };
+
+                _this.setSelectedFood = function(food) {
+                   var x =  {
+                     description: food.description,
+                     vitamins: _this.getVitamins(food),
+                     minerals: _this.getMinerals(food),
+                     otherNutrients: _this.getOtherNutrients(food)
+                   };
+                   _this.selectedFood(x);
+                };
+
+                _this.getVitamins = function(food) {
+                  return [];
+                };
+
+                _this.getMinerals = function(food) {
+                  return [];
+                };
+
+                _this.getOtherNutrients = function(food) {
+                  return [];
                 };
             }
 
@@ -104,38 +127,27 @@
                 <div>
                     <h2>Matching Foods</h2>
 
-                    <h3>Total matching foods: <span data-bind="text: totalMatchingFoods"></span></h3>
+                    <b>Total matching foods: <span data-bind="text: totalMatchingFoods"></span></b>
                     <table>
                         <tbody data-bind="foreach: matchingFoods">
                         <tr>
-                            <td data-bind="text: description"></td>
+                            <td><a href="#" data-bind="text: description, click: $parent.setSelectedFood"></a></td>
                             <td data-bind="text: tags"></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <div>
-                    <h2>{FOOD}</h2>
+                    <h3 data-bind="text: selectedFood().description"></h3>
 
                     <h3>Vitamins</h3>
-                    <ul>
-                        <li>vitamin</li>
-                        <li>vitamin</li>
-                        <li>vitamin</li>
-                        <li>vitamin</li>
+                    <ul data-bind="foreach: selectedFood().vitamins">
                     </ul>
                     <h3>Minerals</h3>
-                    <ul>
-                        <li>mineral</li>
-                        <li>mineral</li>
-                        <li>mineral</li>
-                        <li>mineral</li>
+                    <ul data-bind="foreach: selectedFood().minerals">
                     </ul>
-                    <h3>Other</h3>
-                    <ul>
-                        <li>other</li>
-                        <li>other</li>
-                        <li>other</li>
+                    <h3>Other Nutrients</h3>
+                    <ul data-bind="foreach: selectedFood().otherNutrients">
                     </ul>
                 </div>
             </div>
