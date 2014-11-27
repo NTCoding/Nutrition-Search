@@ -143,11 +143,6 @@ object Application extends Controller {
     val json = Json.generate(matches)
     Ok(json) as "application/json"
   }
-
-  def nutrients() = Action {
-    Ok(Json.generate(nutrients2)) as "application/json"
-  }
-
 }
 
 

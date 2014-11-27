@@ -14,6 +14,7 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
     <script type="text/javascript">
+            var nutrients = ["Adjusted Protein","Alanine","Alcohol, ethyl","Arginine","Ash","Aspartic acid","Beta-sitosterol","Betaine","Caffeine","Calcium, Ca","Campesterol","Carbohydrate, by difference","Carotene, alpha","Carotene, beta","Cholesterol","Choline, total","Copper, Cu","Cryptoxanthin, beta","Cystine","Dihydrophylloquinone","Energy","Fatty acids, total monounsaturated","Fatty acids, total polyunsaturated","Fatty acids, total saturated","Fatty acids, total trans","Fatty acids, total trans-monoenoic","Fatty acids, total trans-polyenoic","Fiber, total dietary","Fluoride, F","Folate, DFE","Folate, food","Folate, total","Folic acid","Fructose","Galactose","Glucose (dextrose)","Glutamic acid","Glycine","Histidine","Hydroxyproline","Iron, Fe","Isoleucine","Lactose","Leucine","Lutein + zeaxanthin","Lycopene","Lysine","Magnesium, Mg","Maltose","Manganese, Mn","Menaquinone-4","Methionine","Niacin","Pantothenic acid","Phenylalanine","Phosphorus, P","Phytosterols","Potassium, K","Proline","Protein","Retinol","Riboflavin","Selenium, Se","Serine","Sodium, Na","Starch","Stigmasterol","Sucrose","Sugars, total","Theobromine","Thiamin","Threonine","Tocopherol, beta","Tocopherol, delta","Tocopherol, gamma","Total lipid (fat)","Tryptophan","Tyrosine","Valine","Vitamin A, IU","Vitamin A, RAE","Vitamin B-12","Vitamin B-12, added","Vitamin B-6","Vitamin C, total ascorbic acid","Vitamin D","Vitamin D (D2 + D3)","Vitamin D2 (ergocalciferol)","Vitamin D3 (cholecalciferol)","Vitamin E (alpha-tocopherol)","Vitamin E, added","Vitamin K (phylloquinone)","Water","Zinc, Zn"]
             function foodsViewModel(nutrients) {
                 _this = this;
                 _this.nutrients = ko.observableArray(nutrients);
@@ -69,15 +70,8 @@
                 };
             }
 
-            var model = null;
-
-            $.get("/nutrients", function(data) {
-                model = new foodsViewModel(data);
-                ko.applyBindings(model);
-            });
-
-
-
+            var model = new foodsViewModel(nutrients);
+            ko.applyBindings(model);
     </script>
 </head>
 <body>
