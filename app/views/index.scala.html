@@ -11,68 +11,7 @@
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link href="/assets/css/styles.css" rel="stylesheet">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
-    <script type="text/javascript">
-            var nutrients = ["Adjusted Protein","Alanine","Alcohol, ethyl","Arginine","Ash","Aspartic acid","Beta-sitosterol","Betaine","Caffeine","Calcium, Ca","Campesterol","Carbohydrate, by difference","Carotene, alpha","Carotene, beta","Cholesterol","Choline, total","Copper, Cu","Cryptoxanthin, beta","Cystine","Dihydrophylloquinone","Energy","Fatty acids, total monounsaturated","Fatty acids, total polyunsaturated","Fatty acids, total saturated","Fatty acids, total trans","Fatty acids, total trans-monoenoic","Fatty acids, total trans-polyenoic","Fiber, total dietary","Fluoride, F","Folate, DFE","Folate, food","Folate, total","Folic acid","Fructose","Galactose","Glucose (dextrose)","Glutamic acid","Glycine","Histidine","Hydroxyproline","Iron, Fe","Isoleucine","Lactose","Leucine","Lutein + zeaxanthin","Lycopene","Lysine","Magnesium, Mg","Maltose","Manganese, Mn","Menaquinone-4","Methionine","Niacin","Pantothenic acid","Phenylalanine","Phosphorus, P","Phytosterols","Potassium, K","Proline","Protein","Retinol","Riboflavin","Selenium, Se","Serine","Sodium, Na","Starch","Stigmasterol","Sucrose","Sugars, total","Theobromine","Thiamin","Threonine","Tocopherol, beta","Tocopherol, delta","Tocopherol, gamma","Total lipid (fat)","Tryptophan","Tyrosine","Valine","Vitamin A, IU","Vitamin A, RAE","Vitamin B-12","Vitamin B-12, added","Vitamin B-6","Vitamin C, total ascorbic acid","Vitamin D","Vitamin D (D2 + D3)","Vitamin D2 (ergocalciferol)","Vitamin D3 (cholecalciferol)","Vitamin E (alpha-tocopherol)","Vitamin E, added","Vitamin K (phylloquinone)","Water","Zinc, Zn"]
-            function foodsViewModel(nutrients) {
-                _this = this;
-                _this.nutrients = ko.observableArray(nutrients);
-                _this.nutrientFilters = ko.observableArray();
-                _this.nutrientToAdd = ko.observable();
-                _this.nutrientValueToAdd = ko.observable();
-                _this.matchingFoods = ko.observableArray();
-                _this.totalMatchingFoods = ko.observable();
-                _this.selectedFood = ko.observable({ description: "", nutrients: { vitamins: [] } });
-                _this.numberOfPages = ko.observableArray();
 
-                _this.addNutrient = function() {
-                    var x = {
-                        nutrient: _this.nutrientToAdd(),
-                        amount: _this.nutrientValueToAdd()
-                    };
-                    _this.nutrientFilters.push(x);
-                    _this.nutrientToAdd();
-                    _this.nutrientValueToAdd();
-                    _this.refreshMatchingFoods();
-                };
-
-                _this.refreshMatchingFoods = function() {
-                    $.get("/foods?filters=" + _this.buildFilters(), function(data) {
-                        _this.matchingFoods(data.foods);
-                        _this.totalMatchingFoods(data.total);
-
-                        _this.numberOfPages.removeAll();
-                        for (var i = 0; i < data.numberOfPages; i++) {
-                          _this.numberOfPages.push(i + 1);
-                        }
-                    });
-                };
-
-                 _this.goToPage = function(pageNumber) {
-                    $.get("/foods?filters=" + _this.buildFilters() + "&page=" + pageNumber, function(data) {
-                        _this.matchingFoods(data.foods);
-                        _this.totalMatchingFoods(data.total);
-                    });
-                };
-
-                _this.buildFilters = function() {
-                    var filters = "";
-                    for (var i = 0; i < _this.nutrientFilters().length; i++) {
-                        var filter = _this.nutrientFilters()[i];
-                        filters += filter.nutrient + ":" + filter.amount + "___";
-                    }
-                    return filters;
-                };
-
-                _this.setSelectedFood = function(food) {
-                   _this.selectedFood(food);
-                };
-            }
-
-            var model = new foodsViewModel(nutrients);
-            ko.applyBindings(model);
-    </script>
 </head>
 <body>
 <div class="wrapper">
@@ -194,6 +133,68 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
+<script type="text/javascript">
+            var nutrients = ["Adjusted Protein","Alanine","Alcohol, ethyl","Arginine","Ash","Aspartic acid","Beta-sitosterol","Betaine","Caffeine","Calcium, Ca","Campesterol","Carbohydrate, by difference","Carotene, alpha","Carotene, beta","Cholesterol","Choline, total","Copper, Cu","Cryptoxanthin, beta","Cystine","Dihydrophylloquinone","Energy","Fatty acids, total monounsaturated","Fatty acids, total polyunsaturated","Fatty acids, total saturated","Fatty acids, total trans","Fatty acids, total trans-monoenoic","Fatty acids, total trans-polyenoic","Fiber, total dietary","Fluoride, F","Folate, DFE","Folate, food","Folate, total","Folic acid","Fructose","Galactose","Glucose (dextrose)","Glutamic acid","Glycine","Histidine","Hydroxyproline","Iron, Fe","Isoleucine","Lactose","Leucine","Lutein + zeaxanthin","Lycopene","Lysine","Magnesium, Mg","Maltose","Manganese, Mn","Menaquinone-4","Methionine","Niacin","Pantothenic acid","Phenylalanine","Phosphorus, P","Phytosterols","Potassium, K","Proline","Protein","Retinol","Riboflavin","Selenium, Se","Serine","Sodium, Na","Starch","Stigmasterol","Sucrose","Sugars, total","Theobromine","Thiamin","Threonine","Tocopherol, beta","Tocopherol, delta","Tocopherol, gamma","Total lipid (fat)","Tryptophan","Tyrosine","Valine","Vitamin A, IU","Vitamin A, RAE","Vitamin B-12","Vitamin B-12, added","Vitamin B-6","Vitamin C, total ascorbic acid","Vitamin D","Vitamin D (D2 + D3)","Vitamin D2 (ergocalciferol)","Vitamin D3 (cholecalciferol)","Vitamin E (alpha-tocopherol)","Vitamin E, added","Vitamin K (phylloquinone)","Water","Zinc, Zn"]
+            function foodsViewModel(nutrients) {
+                _this = this;
+                _this.nutrients = ko.observableArray(nutrients);
+                _this.nutrientFilters = ko.observableArray();
+                _this.nutrientToAdd = ko.observable();
+                _this.nutrientValueToAdd = ko.observable();
+                _this.matchingFoods = ko.observableArray();
+                _this.totalMatchingFoods = ko.observable();
+                _this.selectedFood = ko.observable({ description: "", nutrients: { vitamins: [] } });
+                _this.numberOfPages = ko.observableArray();
+
+                _this.addNutrient = function() {
+                    var x = {
+                        nutrient: _this.nutrientToAdd(),
+                        amount: _this.nutrientValueToAdd()
+                    };
+                    _this.nutrientFilters.push(x);
+                    _this.nutrientToAdd();
+                    _this.nutrientValueToAdd();
+                    _this.refreshMatchingFoods();
+                };
+
+                _this.refreshMatchingFoods = function() {
+                    $.get("/foods?filters=" + _this.buildFilters(), function(data) {
+                        _this.matchingFoods(data.foods);
+                        _this.totalMatchingFoods(data.total);
+
+                        _this.numberOfPages.removeAll();
+                        for (var i = 0; i < data.numberOfPages; i++) {
+                          _this.numberOfPages.push(i + 1);
+                        }
+                    });
+                };
+
+                 _this.goToPage = function(pageNumber) {
+                    $.get("/foods?filters=" + _this.buildFilters() + "&page=" + pageNumber, function(data) {
+                        _this.matchingFoods(data.foods);
+                        _this.totalMatchingFoods(data.total);
+                    });
+                };
+
+                _this.buildFilters = function() {
+                    var filters = "";
+                    for (var i = 0; i < _this.nutrientFilters().length; i++) {
+                        var filter = _this.nutrientFilters()[i];
+                        filters += filter.nutrient + ":" + filter.amount + "___";
+                    }
+                    return filters;
+                };
+
+                _this.setSelectedFood = function(food) {
+                   _this.selectedFood(food);
+                };
+            }
+
+            var model = new foodsViewModel(nutrients);
+            ko.applyBindings(model);
+    </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 </body>
 </html>
