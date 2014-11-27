@@ -1,9 +1,19 @@
-<!Doctype html>
-<html>
-    <head>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
-        <script type="text/javascript">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Basis Template for Bootstrap 3</title>
+    <meta name="generator" content="Bootply"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="/assets/css/styles.css" rel="stylesheet">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
+    <script type="text/javascript">
             function foodsViewModel(nutrients) {
                 _this = this;
                 _this.nutrients = ko.observableArray(nutrients);
@@ -48,70 +58,90 @@
                 ko.applyBindings(model);
             });
 
-        </script>
-    </head>
-    <body>
-      <h1>Food Nutrient Database</h1>
-      <div>
-          <h2>Nutrient Search</h2>
-          <table>
-              <thead>
-                <tr>
-                    <th>Nutrient</th>
-                    <th>Maximum Amount</th>
-                </tr>
-              </thead>
-              <tbody data-bind="foreach: nutrientFilters">
-                <tr>
-                    <td data-bind="text: nutrient"></td>
-                    <td data-bind="text: amount"></td>
-                </tr>
-              </tbody>
-          </table>
-          <div>
-              <label>
-                  <select data-bind="options: nutrients, value: nutrientToAdd"></select>
-              </label>
-              <label>
-                  <input type="text" data-bind="value: nutrientValueToAdd" />
-              </label>
-              <button data-bind="click: addNutrient">Add</button>
-          </div>
-      </div>
-      <div>
-          <h2>Matching Foods</h2>
-          <h3>Total matching foods: <span data-bind="text: totalMatchingFoods"></span></h3>
-          <table>
-              <tbody data-bind="foreach: matchingFoods">
-                   <tr>
-                       <td data-bind="text: description"></td>
-                       <td data-bind="text: tags"></td>
-                   </tr>
-              </tbody>
-          </table>
-      </div>
-      <div>
-          <h2>{FOOD}</h2>
-          <h3>Vitamins</h3>
-          <ul>
-              <li>vitamin</li>
-              <li>vitamin</li>
-              <li>vitamin</li>
-              <li>vitamin</li>
-          </ul>
-          <h3>Minerals</h3>
-          <ul>
-              <li>mineral</li>
-              <li>mineral</li>
-              <li>mineral</li>
-              <li>mineral</li>
-          </ul>
-          <h3>Other</h3>
-          <ul>
-              <li>other</li>
-              <li>other</li>
-              <li>other</li>
-          </ul>
-      </div>
-    </body>
+
+
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="box">
+        <div class="row">
+
+            <div class="column col-sm-3" id="sidebar">
+
+            </div>
+
+            <div class="column col-sm-9" id="main">
+
+                <h1>Food Nutrient Database</h1>
+
+                <div>
+                    <h2>Nutrient Search</h2>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Nutrient</th>
+                            <th>Maximum Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: nutrientFilters">
+                        <tr>
+                            <td data-bind="text: nutrient"></td>
+                            <td data-bind="text: amount"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <label>
+                            <select data-bind="options: nutrients, value: nutrientToAdd"></select>
+                        </label>
+                        <label>
+                            <input type="text" data-bind="value: nutrientValueToAdd"/>
+                        </label>
+                        <button data-bind="click: addNutrient">Add</button>
+                    </div>
+                </div>
+                <div>
+                    <h2>Matching Foods</h2>
+
+                    <h3>Total matching foods: <span data-bind="text: totalMatchingFoods"></span></h3>
+                    <table>
+                        <tbody data-bind="foreach: matchingFoods">
+                        <tr>
+                            <td data-bind="text: description"></td>
+                            <td data-bind="text: tags"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h2>{FOOD}</h2>
+
+                    <h3>Vitamins</h3>
+                    <ul>
+                        <li>vitamin</li>
+                        <li>vitamin</li>
+                        <li>vitamin</li>
+                        <li>vitamin</li>
+                    </ul>
+                    <h3>Minerals</h3>
+                    <ul>
+                        <li>mineral</li>
+                        <li>mineral</li>
+                        <li>mineral</li>
+                        <li>mineral</li>
+                    </ul>
+                    <h3>Other</h3>
+                    <ul>
+                        <li>other</li>
+                        <li>other</li>
+                        <li>other</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/js/bootstrap.min.js"></script>
+</body>
 </html>
