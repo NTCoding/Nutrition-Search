@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   ws,
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.4.2"
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.4.2",
+  "commons-io" % "commons-io" % "2.4"
 )
 

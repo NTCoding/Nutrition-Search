@@ -2,6 +2,7 @@ package controllers
 
 import java.io.File
 
+import org.h2.util.IOUtils
 import play.api._
 import play.api.mvc._
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
@@ -60,11 +61,14 @@ case class NutrientFilter(name: String, maximumValue: BigDecimal)
 case class FoodsResponse(foods: Seq[ApiFood], total: Int, numberOfPages: Int)
 
 object Foods {
+  import org.apache.commons.io.IOUtils._
+  import org.apache.commons.io.IOUtils
   import play.api.Play.current
 
   def all(): Seq[Food] = {
-    val txt = Source.fromFile(new File(Play.application.classloader.getResource("foods.json").getFile)).getLines().mkString
-    Json.parse[Seq[Food]](txt)
+    val foodData = Play resourceAsStream "public/foods.json" get
+    val json = IOUtils toString (foodData, "UTF-8")
+    Json.parse[Seq[Food]](json)
   }
 }
 
