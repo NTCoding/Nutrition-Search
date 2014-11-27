@@ -26,7 +26,9 @@ object Application extends Controller {
         }
       }
     } sortBy(_.description)
-    val response = FoodsResponse(matchingFoods.drop(fr.page - 1 * pageSize).take(pageSize), matchingFoods.length)
+    val numberOfPages = Math.round((matchingFoods.length.toDouble / pageSize) + 1)
+    val toDrop = (fr.page - 1) * pageSize
+    val response = FoodsResponse(matchingFoods.drop(toDrop).take(pageSize), matchingFoods.length, numberOfPages.toInt)
     Ok(Json.generate(response)) as "application/json"
   }
 
@@ -55,7 +57,7 @@ object Application extends Controller {
 
 case class NutrientFilter(name: String, maximumValue: BigDecimal)
 
-case class FoodsResponse(foods: Seq[Food], total: Int)
+case class FoodsResponse(foods: Seq[Food], total: Int, numberOfPages: Int)
 
 object Foods {
   import play.api.Play.current

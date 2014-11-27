@@ -23,6 +23,7 @@
                 _this.matchingFoods = ko.observableArray();
                 _this.totalMatchingFoods = ko.observable();
                 _this.selectedFood = ko.observable({ description: "Select a Food to See Nutrient Content", vitamins: [], minerals: [], otherNutrients:[]});
+                _this.numberOfPages = ko.observableArray();
 
                 _this.addNutrient = function() {
                     var x = {
@@ -37,6 +38,18 @@
 
                 _this.refreshMatchingFoods = function() {
                     $.get("/foods?filters=" + _this.buildFilters(), function(data) {
+                        _this.matchingFoods(data.foods);
+                        _this.totalMatchingFoods(data.total);
+
+                        _this.numberOfPages.removeAll();
+                        for (var i = 0; i < data.numberOfPages; i++) {
+                          _this.numberOfPages.push(i + 1);
+                        }
+                    });
+                };
+
+                 _this.goToPage = function(pageNumber) {
+                    $.get("/foods?filters=" + _this.buildFilters() + "&page=" + pageNumber, function(data) {
                         _this.matchingFoods(data.foods);
                         _this.totalMatchingFoods(data.total);
                     });
@@ -136,6 +149,11 @@
                         </tr>
                         </tbody>
                     </table>
+                    <br />
+                    <span style="float: left;">Page:</span>
+                    <ul style="list-style-type: none;" data-bind="foreach: numberOfPages">
+                        <li style="display: inline;"><a href="#" data-bind="text: $data, click: $parent.goToPage"></a></li>
+                    </ul>
                 </div>
                 <div>
                     <h3 data-bind="text: selectedFood().description"></h3>
