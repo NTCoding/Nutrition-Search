@@ -22,7 +22,7 @@
                 _this.nutrientValueToAdd = ko.observable();
                 _this.matchingFoods = ko.observableArray();
                 _this.totalMatchingFoods = ko.observable();
-                _this.selectedFood = ko.observable({ description: "Select a Food to See Nutrient Content", vitamins: [], minerals: [], otherNutrients:[]});
+                _this.selectedFood = ko.observable({ description: "", nutrients: { vitamins: [] } });
                 _this.numberOfPages = ko.observableArray();
 
                 _this.addNutrient = function() {
@@ -65,25 +65,7 @@
                 };
 
                 _this.setSelectedFood = function(food) {
-                   var x =  {
-                     description: food.description,
-                     vitamins: _this.getVitamins(food),
-                     minerals: _this.getMinerals(food),
-                     otherNutrients: _this.getOtherNutrients(food)
-                   };
-                   _this.selectedFood(x);
-                };
-
-                _this.getVitamins = function(food) {
-                  return [];
-                };
-
-                _this.getMinerals = function(food) {
-                  return [];
-                };
-
-                _this.getOtherNutrients = function(food) {
-                  return [];
+                   _this.selectedFood(food);
                 };
             }
 
@@ -159,14 +141,60 @@
                     <h3 data-bind="text: selectedFood().description"></h3>
 
                     <h3>Vitamins</h3>
-                    <ul data-bind="foreach: selectedFood().vitamins">
-                    </ul>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vitamin</th>
+                                <th>Amount (per 100g)</th>
+                                <th>Unit</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: selectedFood().nutrients.vitamins">
+                            <tr>
+                                <td data-bind="text: $data.description"></td>
+                                <td data-bind="text: $data.value"></td>
+                                <td data-bind="text: $data.units"></td>
+                            </tr>
+                        </tbody>
+                        </thead>
+                    </table>
                     <h3>Minerals</h3>
-                    <ul data-bind="foreach: selectedFood().minerals">
-                    </ul>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Mineral</th>
+                            <th>Amount (per 100g)</th>
+                            <th>Unit</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: selectedFood().nutrients.minerals">
+                        <tr>
+                            <td data-bind="text: $data.description"></td>
+                            <td data-bind="text: $data.value"></td>
+                            <td data-bind="text: $data.units"></td>
+                        </tr>
+                        </tbody>
+                        </thead>
+                    </table>
                     <h3>Other Nutrients</h3>
-                    <ul data-bind="foreach: selectedFood().otherNutrients">
-                    </ul>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Nutrient</th>
+                            <th>Amount (per 100g)</th>
+                            <th>Unit</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: selectedFood().nutrients.otherNutrients">
+                        <tr>
+                            <td data-bind="text: $data.description"></td>
+                            <td data-bind="text: $data.value"></td>
+                            <td data-bind="text: $data.units"></td>
+                        </tr>
+                        </tbody>
+                        </thead>
+                    </table>
+
                 </div>
             </div>
         </div>

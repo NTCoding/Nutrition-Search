@@ -25,7 +25,7 @@ object Application extends Controller {
           nutrient.value < filter.maximumValue
         }
       }
-    } sortBy(_.description)
+    } sortBy(_.description) map(ApiFood.apply)
     val numberOfPages = Math.round((matchingFoods.length.toDouble / pageSize) + 1)
     val toDrop = (fr.page - 1) * pageSize
     val response = FoodsResponse(matchingFoods.drop(toDrop).take(pageSize), matchingFoods.length, numberOfPages.toInt)
@@ -57,7 +57,7 @@ object Application extends Controller {
 
 case class NutrientFilter(name: String, maximumValue: BigDecimal)
 
-case class FoodsResponse(foods: Seq[Food], total: Int, numberOfPages: Int)
+case class FoodsResponse(foods: Seq[ApiFood], total: Int, numberOfPages: Int)
 
 object Foods {
   import play.api.Play.current
@@ -67,6 +67,30 @@ object Foods {
     Json.parse[Seq[Food]](txt)
   }
 }
+
+object ApiFood {
+  val mineralSymbols = Seq(
+    ", Ca",
+    ", Fe",
+    ", Mg",
+    ", P",
+    ", K",
+    ", Na",
+    ", Zn",
+    ", Cu",
+    ", Mn",
+    ", Se",
+    ", DFE"
+  )
+  def apply(food: Food) = {
+    val vitamins = food.nutrients.filter(_.description.toLowerCase.contains("vitamin")) sortBy(_.description)
+    val minerals = food.nutrients.filter(n => mineralSymbols.exists(n.description.contains)) sortBy(_.description)
+    val otherNutrients = food.nutrients.filterNot(n => vitamins.contains(n) || minerals.contains(n)) sortBy(_.description)
+    new ApiFood(food.id, food.description, food.tags, food.portions, Nutrients(vitamins, minerals, otherNutrients))
+  }
+}
+case class ApiFood(id: String, description: String, tags: Seq[String], portions: Seq[Portion], nutrients: Nutrients)
+case class Nutrients(vitamins: Seq[Nutrient], minerals: Seq[Nutrient], otherNutrients: Seq[Nutrient])
 
 case class Food(id: String, description: String, tags: Seq[String], portions: Seq[Portion], nutrients: Seq[Nutrient])
 case class Portion(amount: BigDecimal, unit: String, grams: BigDecimal)
